@@ -44,6 +44,50 @@ int inorder(node *a)
 	return 1;
 }
 
+node *look(node *a, int key)
+{
+	node *ret;
+	if(a == NULL)
+	{
+		return NULL;
+	}
+	if(a->data == key)
+	{
+		return a;
+	}
+	if(key < a->data)
+	{
+		ret = look(a->left, key);
+	}
+	
+	else if(key > a->data)
+	{
+		ret = look(a->right, key);
+	}
+	return ret;
+}
+
+node *smallest(node *root)
+{
+	node *slider = root;
+	while(slider->left != NULL)
+	{
+		slider = slider->left;
+	}
+	return slider;
+}
+
+
+node *biggest(node *root)
+{
+	node *slider = root;
+	while(slider->right != NULL)
+	{
+		slider = slider->right;
+	}
+	return slider;
+}
+
 class tree
 {
 	public:           
@@ -99,6 +143,94 @@ class tree
 	{
 		int a = inorder(root);
 	}
+
+	node *search(int key)
+	{
+		node *result;
+		result = look(root,key);
+		if(result == NULL)
+		{
+			cout<<"node not found";
+		}else
+		{
+			cout<<"node found";
+		}
+		return result;	
+	}
+	
+	int deletion(int key)
+	{
+		node *keyn = NULL;
+		node *replace = NULL;
+		keyn = search(key);
+		if(keyn != NULL)
+		{
+			if(keyn->right != NULL)
+			{	
+				replace = smallest(keyn->right);
+				if(replace->right != NULL)
+				{
+					replace->right->parent = replace->parent;
+					replace->parent->left = replace->right;
+				}
+				if(keyn->parent->left == keyn)
+				{
+					keyn->parent->left = replace;
+					replace->parent = keyn->parent;
+					replace->left = keyn->left;
+					replace->right = keyn->right;
+					keyn->left->parent = replace;
+					keyn->right->parent = replace;
+				}else
+				{
+					keyn->parent->right = replace;
+					replace->parent = keyn->parent;
+					replace->left = keyn->left;
+					replace->right = keyn->right;
+					keyn->left->parent = replace;
+					keyn->right->parent = replace;
+				}
+				delete keyn;
+			}else
+			if(keyn->left != NULL)
+			{	
+				replace = biggest(keyn->left);
+				if(replace->left != NULL)
+				{
+					replace->left->parent = replace->parent;
+					replace->parent->right = replace->left;
+				}
+				if(keyn->parent->left == keyn)
+				{
+					keyn->parent->left = replace;
+					replace->parent = keyn->parent;
+					replace->left = keyn->left;
+					replace->right = keyn->right;
+					keyn->left->parent = replace;
+					keyn->right->parent = replace;
+				}else
+				{
+					keyn->parent->right = replace;
+					replace->parent = keyn->parent;
+					replace->left = keyn->left;
+					replace->right = keyn->right;
+					keyn->left->parent = replace;
+					keyn->right->parent = replace;
+				}
+				delete keyn; 
+			}else
+			{
+				if(keyn->parent->left == keyn)
+				{
+					keyn->parent->left = NULL;
+				}else
+				{
+					keyn->parent->right = NULL;
+				}
+				delete keyn;
+			} 	
+		}
+	}
 };
 
 
@@ -114,7 +246,14 @@ t1.add(14);
 t1.add(45);
 t1.add(63);
 t1.add(23);
+t1.add(17);
+t1.add(57);
+t1.add(36);
+t1.add(85);
+t1.add(46);
+t1.display();
+t1.search(59);
+t1.deletion(36);
 t1.display();
 return 0;
 }
-
